@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% extends "airflow/main.html" %}
+
+    {% block content %}
+    <form id="main_form">
+        <div class="container">
+            <div class="col-xs-4">
+                <label>DAG_ID Example: LOAD_{DB}_{LAYER}_{DOMAIN}_{NAME}</label>
+            </div>
+        </div>   
+        <hr>     
+        <div class="container">
+            <div class="col-xs-4">
+                <label for="dag_domain">DAG Domain:</label>
+                <input class="form-control" name="dag_domain" id="dag_domain" placeholder="{DOMAIN}">
+            </div>
+        </div>     
+        <div class="container">
+            <div class="col-xs-4">
+                <label for="dag_id">DAG Name:</label>
+                <input class="form-control" name="dag_name" id="dag_name" placeholder="{NAME}">
+            </div>
+        </div>
+        <div class="container">
+            <div class="col-xs-4">
+                <label for="db_dropdown">Data Base:</label>
+                <select name="db_dropdown" id="db_dropdown" class="form-control">
+                    <option value="GP_C">GreenPlum Cloud</option>
+                    <option value="GP_P">GreenPlum On-Premises</option>
+                    <option value="CH">ClickHouse</option>
+                </select> 
+            </div>
+        </div>
+        <div class="container">
+            <div class="col-xs-4">
+                <label for="layer_dropdown">Layer:</label>
+                <select name="layer_dropdown" id="layer_dropdown" class="form-control">
+                    <option value="CORE">CORE</option>
+                    <option value="PRE">PRE</option>
+                    <option value="REF">REF</option>
+                    <option value="REP">REP</option>
+                </select> 
+            </div>
+        </div>        
+        <div class="container">
+            <div class="col-xs-4">
+                <label>Tags:</label>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="tag_check" id="tag_check" value="example"> example
+                    </label>
+                    <label>
+                        <input type="checkbox" name="tag_check" id="tag_check" value="ui"> ui
+                    </label>
+                    <label>
+                        <input type="checkbox" name="tag_check" id="tag_check" value="dataset"> dataset
+                    </label>
+                    <label>
+                        <input type="checkbox" name="tag_check" id="tag_check" value="params"> params
+                    </label>
+                    <label>
+                        <input type="checkbox" name="tag_check" id="tag_check" value="timetable"> timetable
+                    </label>
+                    <label>
+                        <input type="checkbox" name="tag_check" id="tag_check" value="_im"> _im
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="col-xs-2">
+                <label for="interval_text">
+                    Schedule Interval:
+                </label>
+                <input class="form-control" name="interval_text" id="interval_text" placeholder="* * * * * or None">
+            </div>
+        </div>
+        <hr> 
+        <div class="container">
+            <div class="col-xs-4">
+                <button id="new_task_group_btn" name="new_task_group_btn" class="btn btn-primary me-2" type="button" 
+                    onclick="return createTaskGroup()">
+                    Add new Task Group
+                </button>
+            </div>
+        </div>  
+        <hr>     
+    </form>   
+    <form id="radio_form">
+        <div class="container">
+            <div class="col-xs-2">
+                <label for="task_group_name_text">
+                    Task Group Name:
+                </label>
+                <input class="form-control" name="task_group_name_text" id="task_group_name_text">
+            </div>            
+        </div>        
+        <div class="container">
+            <div class="col-xs-6">
+                <label for="db_names_list">
+                    Data Bases Names (Separate names with ,):
+                </label>
+                <input class="form-control" name="db_names_list" id="db_names_list" placeholder="schema.db_name1, schema.db_name2">
+            </div>            
+        </div>   
+        <div class="container">
+            <div class="col-xs-5">
+                <label>How many DBs should be at least selected:</label>
+                <div>
+                    <label>
+                        <input type="radio" name="db_count_sensor" id="db_count_sensor" value="1" checked="checked"> One
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input type="radio" name="db_count_sensor" id="db_count_sensor" value="all"> All
+                    </label>
+                </div>
+            
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <input type="radio" name="db_count_sensor" id="db_count_sensor" value="other">
+                    </span>
+                    <input type="text" name="db_count_sensor_other" id="db_count_sensor_other" class="form-control">
+                </div>
+            </div> 
+        </div>
+        <hr> 
+    </form>
+    <form id="last_form">      
+        <div class="container" id="gen_dag_btn_container">
+            <div class="col-xs-4">
+                <button id="gen_dag_btn" name="form_btn" value="gen_dag_btn" class="btn btn-primary me-2" type="submit">
+                    Generate DAG
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <script type="text/javascript" src="/static/dummy_dag_plugin/script.js"></script>
+    {% endblock %}
+</body>
+</html>
