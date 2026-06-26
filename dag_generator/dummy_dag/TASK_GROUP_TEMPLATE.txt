@@ -1,0 +1,19 @@
+    with TaskGroup("$task_group_name") as $task_group_name:
+        sql_task_$task_group_name = """
+            $db_names_list
+            $db_count_sensor
+        """
+        sensor_$task_group_name = SqlSensor(
+            task_id='$task_group_name' + '_sensor',
+            conn_id=$dag_db_connection,
+            sql=sql_task_$task_group_name,
+            poke_interval=60 * 5,   # time in sec that sensor waits before checking the condition again.
+            timeout=72000,          # the tasks fails if data doesn't arrive within 10 hours
+            mode='reschedule',      # if the criteria is not met reschedule the next check for a later time
+            on_failure_callback=task_failure_callback # print error msg cause sensor failed
+        )
+
+        log_status_$task_group_name = log_status(schema, 'yug_$task_group_name', dag_id)
+
+        sensor_$task_group_name >> log_status_$task_group_name
+

@@ -1,0 +1,37 @@
+from airflow.decorators import dag,task
+from airflow.exceptions import AirflowSensorTimeout, AirflowFailException
+from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+from datetime import datetime, timedelta
+from airflow.sensors.sql import SqlSensor
+from airflow.models.baseoperator import chain
+from airflow.operators.python import PythonOperator
+from airflow.operators.empty import EmptyOperator
+
+@dag(
+    dag_id=$dag_id,
+    tags=$dag_tags,
+    schedule=$dag_interval,
+    default_args = {
+        'owner': 'airflow',
+        'depends_on_past': $dag_depends_on_past,
+        'start_date': datetime(2025,12,10),
+        'email_on_failure': False,
+        'email_on_retry': False,
+        'retries': 3, #the number of retries when the task failed
+        'retry_delay': timedelta(seconds=30), #deceleration time between retries
+        'execution_timeout': timedelta(minutes=5), #spresify the maximum working time of the task
+    }
+)
+def dummy_dag_example():
+    start = EmptyOperator(task_id="start")
+    end = EmptyOperator(task_id="end")
+
+    def task_failure_callback(context):
+        print(f"sensor failed due to timeout, task_instance_key_str: {context['task_instance_key_str']}")
+
+%place_for_task_group%
+
+    start >> end
+
+dummy_dag_example()
